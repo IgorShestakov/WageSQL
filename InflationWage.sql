@@ -22,24 +22,30 @@ Values
       (2016,  5.40),
       (2017,  2.50); 
       
-Select region, municipality, year, wage, salary_increase, inflation, 
-Round(EXP(SUM(LOG(inflation_1)) over (Order by year)) * 
-(select wage from data where municipality = 'Нижний Новгород' limit 1),2) as wage_inflation /*Получаем зарплату 2002 года с учетом 15 летней инфляции */
+Select 
+      region, 
+	  municipality, 
+      year, 
+      wage, 
+      salary_increase, 
+      inflation, 
+      Round(EXP(SUM(LOG(inflation_1)) over (Order by year)) * 
+      (select wage from data where municipality = 'Нижний Новгород' limit 1),2) as wage_inflation /*Получаем зарплату 2002 года с учетом 15 летней инфляции */
 from (   
-Select           /* расчитываем темп роста зарплаты в Нижнем Новгороде */
-      region,
-	  municipality,
-      year,
-      wage,
-	  round(100 - lag(wage) over w /  wage *  100.0, 2) as salary_increase,
-      case when year = 2002 then wage else 0 end as x,
-      inflation,
-      inflation  / 100 + 1 as inflation_1
-FROM data
-     left join inflation using(year)
-Where municipality = 'Нижний Новгород'
-window w as (order by wage ROWS BETWEEN 1 PRECEDING AND CURRENT ROW)
-Order by municipality, wage, region, year) as qr;
+    Select           /* расчитываем темп роста зарплаты в Нижнем Новгороде */
+          region,
+		  municipality,
+          year,
+          wage,
+	      round(100 - lag(wage) over w /  wage *  100.0, 2) as salary_increase,
+          case when year = 2002 then wage else 0 end as x,
+          inflation,
+          inflation  / 100 + 1 as inflation_1
+     FROM data
+          left join inflation using(year)
+	Where municipality = 'Нижний Новгород'
+    window w as (order by wage ROWS BETWEEN 1 PRECEDING AND CURRENT ROW) 
+    Order by municipality, wage, region, year) as qr;
 
 
 
