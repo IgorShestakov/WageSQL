@@ -31,7 +31,7 @@ Select
       inflation, 
       Round(EXP(SUM(LOG(inflation_1)) over (Order by year)) * 
       (select wage from data where municipality = 'Нижний Новгород' limit 1),2) as wage_inflation /*Получаем зарплату 2002 года с учетом 15 летней инфляции */
-from (   
+From (   
     Select           /* расчитываем темп роста зарплаты в Нижнем Новгороде */
           region,
 		  municipality,
@@ -42,9 +42,9 @@ from (
           inflation,
           inflation  / 100 + 1 as inflation_1
      FROM data
-          left join inflation using(year)
+          Left join inflation using(year)
 	Where municipality = 'Нижний Новгород'
-    window w as (order by wage ROWS BETWEEN 1 PRECEDING AND CURRENT ROW) 
+    Window w as (order by wage ROWS BETWEEN 1 PRECEDING AND CURRENT ROW) 
     Order by municipality, wage, region, year) as qr;
 
 
