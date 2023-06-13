@@ -16,7 +16,7 @@ Values
       (2010,  8.78),
       (2011,  6.10),
       (2012,  6.58),
-	  (2013,  6.45),
+      (2013,  6.45),
       (2014,  11.36),
       (2015,  12.90),
       (2016,  5.40),
@@ -24,7 +24,7 @@ Values
       
 Select 
       region, 
-	  municipality, 
+      municipality, 
       year, 
       wage, 
       salary_increase, 
@@ -34,10 +34,10 @@ Select
 From (   
     Select           /* расчитываем темп роста зарплаты в Нижнем Новгороде */
           region,
-		  municipality,
+	  municipality,
           year,
           wage,
-	      round(100 - lag(wage) over w /  wage *  100.0, 2) as salary_increase,
+	  round(100 - lag(wage) over w /  wage *  100.0, 2) as salary_increase,
           case when year = 2002 then wage else 0 end as x,
           inflation,
           inflation  / 100 + 1 as inflation_1
