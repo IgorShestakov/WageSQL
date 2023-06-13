@@ -30,7 +30,7 @@ Select
       salary_increase, 
       inflation, 
       Round(EXP(SUM(LOG(inflation_1)) over (Order by year)) * 
-      (select wage from data where municipality = 'Нижний Новгород' limit 1),2) as wage_inflation /*Получаем зарплату 2002 года с учетом 15 летней инфляции */
+      (select wage from data where municipality = 'Нижний Новгород' limit 1),2) as wage_inflation /*Получаем зарплату 2002 года с учетом ежегодной инфляции*/
 From (   
     Select           /* расчитываем темп роста зарплаты в Нижнем Новгороде */
           region,
