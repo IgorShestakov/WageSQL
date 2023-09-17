@@ -2,9 +2,9 @@ SET NAMES 'cp1251'; /* Задаем формат для нормального �
 ALTER TABLE `town`.`data`  /*Добавляем поле Инфлянция */
 ADD COLUMN `inflation` INT NULL AFTER `workers`; 
 
-insert into town.inflation(
+INSERT INTO town.inflation(
    year, town.inflation)
-Values
+VALUES
       (2002,  0),
       (2003,  11.99),
       (2004,  11.74),
@@ -22,30 +22,30 @@ Values
       (2016,  5.40),
       (2017,  2.50); 
       
-Select 
+SELECT 
       region, 
       municipality, 
       year, 
       wage, 
       salary_increase, 
       inflation, 
-      Round(EXP(SUM(LOG(inflation_1)) over (Order by year)) * 
-      (select wage from data where municipality = 'Нижний Новгород' limit 1),2) as wage_inflation /*Получаем зарплату 2002 года с учетом ежегодной инфляции*/
-From (   
-    Select           /* расчитываем темп роста зарплаты в Нижнем Новгороде */
+      Round(EXP(SUM(LOG(inflation_1)) over (ORDER BY year)) * 
+      (SELECT wage FROM data WHERE municipality = 'Нижний Новгород' LIMIT 1),2) AS wage_inflation /*Получаем зарплату 2002 года с учетом ежегодной инфляции*/
+FROM (   
+    SELECT           /* расчитываем темп роста зарплаты в Нижнем Новгороде */
           region,
 	  municipality,
           year,
           wage,
-	  round(100 - lag(wage) over w /  wage *  100.0, 2) as salary_increase,
-          case when year = 2002 then wage else 0 end as x,
+	  round(100 - lag(wage) over w /  wage *  100.0, 2) AS salary_increase,
+          CASE WHEN year = 2002 THEN wage ELSE 0 END AS x,
           inflation,
-          inflation  / 100 + 1 as inflation_1
+          inflation  / 100 + 1 AS inflation_1
      FROM data
-          Left join inflation using(year)
-	Where municipality = 'Нижний Новгород'
-    Window w as (order by wage ROWS BETWEEN 1 PRECEDING AND CURRENT ROW) 
-    Order by municipality, wage, region, year) as qr;
+          LEFT JOIN inflation USING(year)
+	WHERE municipality = 'Нижний Новгород'
+    Window w AS (ORDER BY wage ROWS BETWEEN 1 PRECEDING AND CURRENT ROW) 
+    ORDER BY municipality, wage, region, year) AS qr;
 
 
 
